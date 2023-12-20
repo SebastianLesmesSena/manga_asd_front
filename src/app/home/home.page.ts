@@ -1,28 +1,100 @@
-import { Component } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
+import { AlertController } from '@ionic/angular';
+
+import axios  from 'axios'
 
 @Component({
   selector: 'app-home',
   templateUrl: 'home.page.html',
   styleUrls: ['home.page.scss'],
 })
-export class HomePage {
+export class HomePage implements OnInit{
+  ngOnInit(){}
 
-  constructor() {
+  constructor(
+    private router: Router, 
+    private http:HttpClient, 
+    private alertController: AlertController
+  ){
     this.questInto();
   }
 
   list:string = 'false';
-  cargo: any = []
+  cargo: string = '';
+
+  email: string = '';
+  password: string = '';
+
   questInto(){
-    if(this.cargo === null){
-      this.cargo = 'visitante'
-    };
-  }
-  getUsuarios(){}
-
-  changeList(){
-    if(this.list = 'false'){ this.list = 'true'}
-    else if (this.list = 'true'){ this.list = 'false'}
+    if(this.cargo === ''|| this.cargo === ' '){
+      this.cargo ='visitante'
+    } 
   }
 
+  usuariosDB: any = [];
+  getUser() {
+    this.http.get('').subscribe(
+      (response) => {
+        console.log('Respuesta del servidor:', response);
+        this.usuariosDB = response;
+      },(error) => {console.error('Error al obtener datos del servidor:', error);}
+    )
+  };
+
+  crearManga(){}
+  crearUsuario(){}
+
+  changeList() {
+    if (this.list === 'true') {
+      this.list = 'false';
+    } else if (this.list === 'false') {
+      this.list = 'true';
+    }
+  }
+
+  async presentAlert(title: string, message: string) {
+    const alert = await this.alertController.create({
+      header: title,
+      message: message,
+      buttons: ['OK'],
+      mode: 'ios'
+    })
+  }
+  
+  login() {
+    const inputUsername = this.email;
+    const inputPassword = this.password;
+    const user = this.usuariosDB.find((u: any) => u.numeroTI === inputUsername && u.credenciales === inputPassword);
+
+    if (this.email === '' || this.password === '') {
+      // Al menos uno de los campos está vacío
+      let camposVacios = '';
+      let cont = 0;
+    
+      if (this.email === '') {
+        camposVacios += 'Email, ';
+        cont = cont + 1;
+      }
+      if (this.password === '') {
+        camposVacios += 'Contraseña, ';
+        cont = cont + 1;
+      }
+    
+      camposVacios = camposVacios.slice(0, -2); // Eliminar la coma y el espacio al final
+      if (cont === 2){ this.presentAlert("Los siguientes campos son requeridos para ingresar a la paguina",""+ camposVacios ); }
+      else { this.presentAlert("El campo "+ camposVacios, "Es requerido para ingresar a la paguina" );}
+    }
+    else{
+      if (user) {
+        this.cargo = user.role
+      } else { this.presentAlert("usuario inexistente", ""); }
+    }
+  };
+  
+  limpiar(){
+    this.email = ''
+    this.password = ''
+  };
 }
