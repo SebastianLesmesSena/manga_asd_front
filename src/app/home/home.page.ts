@@ -18,6 +18,7 @@ export class HomePage implements OnInit{
     private http:HttpClient, 
     private alertController: AlertController
   ){
+    this.getUser();
     this.questInto();
   }
 
@@ -27,6 +28,13 @@ export class HomePage implements OnInit{
   email: string = '';
   password: string = '';
 
+  ventana: string = '';
+  number: any = [{},{},{},{}];
+
+  mostrarManga(){this.ventana = ''; this.changeList();}
+  mostrarregistro(){this.ventana = 'registro'; this.changeList();}
+  mostrarCrearUsuario(){this.ventana = 'crear_usuario'; this.changeList();}
+  mostrarCrearManga(){this.ventana = 'crear_manga'; this.changeList();}
   questInto(){
     if(this.cargo === ''|| this.cargo === ' '){
       this.cargo ='visitante'
@@ -66,6 +74,7 @@ export class HomePage implements OnInit{
   login() {
     const inputUsername = this.email;
     const inputPassword = this.password;
+    console.log(inputUsername+' '+inputPassword)
     const user = this.usuariosDB.find((u: any) => u.numeroTI === inputUsername && u.credenciales === inputPassword);
 
     if (this.email === '' || this.password === '') {
@@ -88,9 +97,10 @@ export class HomePage implements OnInit{
     }
     else{
       if (user) {
+        console.log(user.email+' '+user.password)
         this.cargo = user.role
       } else { this.presentAlert("usuario inexistente", ""); }
-    }
+    } this.limpiar();
   };
   
   limpiar(){

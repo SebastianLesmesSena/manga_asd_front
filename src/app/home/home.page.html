@@ -1,15 +1,15 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
     <ion-item id="cargo" lines="none">
-      <p><i>Cargo:</i></p>
-      <p>{{ cargo }}</p>
+      <p slot="start"><i>Cargo: </i></p>
+      <p slot="end"> {{ cargo }}</p>
   </ion-item>  
     <nav class="navbar navbar-dark bg-dark">
       <div class="container-fluid">
           <button (click)="changeList()" class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarToggleExternalContent" aria-controls="navbarToggleExternalContent" aria-expanded="false" aria-label="Toggle navigation">
               <span class="navbar-toggler-icon"></span>
           </button>
-          <nav class="navbar navbar-dark bg-dark">
+          <nav class="navbar navbar-dark bg-dark" *ngIf="ventana === ''">
               <div class="container-fluid">
                   <a class="navbar-brand">Buscar por titulo</a>
                   <form class="d-flex">
@@ -23,10 +23,10 @@
     <div *ngIf="list === 'true'">
       <div class="bg-dark p-4">
           <div id="experimental">
-              <button class="experimentalB" *ngIf="cargo === 'administrador'"><b>Publicar manga</b></button>
-              <button class="experimentalB"><b>Crear usuario</b></button>
-              <button class="experimentalB"><b>Registrarse</b></button>
-              <button class="experimentalB"><b>Mangas</b></button>
+              <button (click)="mostrarCrearManga()" class="experimentalB" *ngIf="cargo === 'administrador'"><b>Publicar manga</b></button>
+              <button (click)="mostrarCrearUsuario()" class="experimentalB"><b>Crear usuario</b></button>
+              <button (click)="mostrarregistro()" class="experimentalB"><b>Registrarse</b></button>
+              <button (click)="mostrarManga()" class="experimentalB"><b>Mangas</b></button>
           </div>
       </div>
     </div>
@@ -35,44 +35,48 @@
 
 <ion-content [fullscreen]="true"><br>
 
-  <div id="cardP">
-    <p id="title"><b><i>Titulo</i></b></p>
-    <div id="pres">
-        <div  id="leter"><b>Precio:<br>$</b></div>
-        <img id="ima" src="https://wallpaperbat.com/img/46380-anime-hd-wallpaper-and-background-image.jpg" alt="">
-    </div>
-    <div  id="leter2"><b>Disponibles: #</b></div><br>
-    
-    <ion-col id="description">
-        <ion-row id="desc">
-          <div><b>Descripción:</b></div>
-          <div id="detalle_desc">Lorem ipsum dolor sit amet consectetur adipisicing elit. Qui esse quas neque debitis repudiandae unde earum, mollitia commodi consequatur at deserunt eveniet eum, laborum, amet distinctio et laudantium obcaecati iusto!</div>
-        </ion-row>
-        <ion-row>
-            <button id="buttonC">Alquilar</button>
-        </ion-row>
-    </ion-col>
-</div><br>
+  <div id="carrucel" *ngIf="ventana === ''">
+    <div id="cardP" *ngFor="let dat of number">
+      <p id="title"><b><i>Titulo</i></b></p>
+      <div id="pres">
+          <div  id="leter"><b>Precio:<br>$</b></div>
+          <img id="ima" src="https://wallpaperbat.com/img/46380-anime-hd-wallpaper-and-background-image.jpg" alt="">
+      </div>
+      <div  id="leter2"><b>Disponibles: #</b></div><br>
+      
+      <ion-col id="description">
+          <ion-row id="desc">
+            <div><b>Descripción:</b></div>
+            <div id="detalle_desc">Lorem ipsum dolor sit amet consectetur adipisicing elit. Qui esse quas neque debitis repudiandae unde earum, mollitia commodi consequatur at deserunt eveniet eum, laborum, amet distinctio et laudantium obcaecati iusto!</div>
+          </ion-row>
+          <ion-row>
+              <button id="buttonC">Alquilar</button>
+          </ion-row>
+      </ion-col>
+    </div><br>
+  </div>
 
-<div id="espacio_registro">
-    <form class="row g-3" id="form_registro">
-        <p id="titulo_registro"><b><i>Formulario de registro</i></b></p>
-        <div class="form-floating mb-6">
-            <input type="email" class="form-control" id="floatingInput" placeholder="name@example.com">
-            <label for="floatingInput"  [(ngModel)]="email">Email address</label>
-        </div>
-        <div class="form-floating mb-6">
-            <input type="password" class="form-control" id="floatingPassword" placeholder="Password">
-            <label for="floatingPassword"  [(ngModel)]="password">Password</label>
-        </div>
-        <div>
-          <button type="submit" class="btn btn-primary mb-3" (click)="login()">Confirm identity</button>
-          <ion-button (click)="login()">yes</ion-button>
-        </div>
-    </form>
+<div id="espacio_registro" *ngIf="ventana === 'registro'">
+  <form class="row g-3" id="form_registro" (ngSubmit)="login()">
+      <p id="titulo_registro"><b><i>Formulario de registro</i></b></p>
+      
+      <div class="form-floating mb-3">
+          <input type="email" class="form-control" placeholder="name@example.com" [(ngModel)]="email" name="email">
+          <label for="floatingInput">Email address</label>
+      </div>
+      
+      <div class="form-floating mb-3">
+          <input type="password" class="form-control" placeholder="Password" [(ngModel)]="password" name="password">
+          <label for="floatingPassword">Password</label>
+      </div>
+      
+      <div>
+          <button type="submit" class="btn btn-primary mb-3">Confirm identity</button>
+      </div>
+  </form>
 </div>
 
-<div id="espacio_publicarManga">
+<div id="espacio_publicarManga" *ngIf="ventana === 'crear_manga'">
     <div id="titulo_publicarManga">
         <p>Formulario para publicar mangas</p>
     </div>
@@ -122,7 +126,7 @@
     </div>
 </div>
 
-<div id="espacio_crearUsuario" class="container mt-5">
+<div id="espacio_crearUsuario" class="container mt-5" *ngIf="ventana === 'crear_usuario'">
     <form id="formulario_crearUsuario" class="bg-light p-5 rounded">
         <div id="titulo_crearUsuario" class="mb-4 text-center">
             <h3>Formulario para Crear Usuario</h3>
