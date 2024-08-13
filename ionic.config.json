@@ -1,0 +1,7 @@
+{
+  "name": "mangas_ASD",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular"
+}
