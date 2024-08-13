@@ -1,1 +1,5 @@
+# Paquete de modulos
 node_modules
+
+# Cache del proyecto
+.angular
